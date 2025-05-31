@@ -23,6 +23,7 @@ return new class extends Migration
     $table->date('date')->nullable();
     $table->string('file_path');
     $table->text('summary')->nullable(); // ← Add this
+    $table->text('content');
     });
 
     }

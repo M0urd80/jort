@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -30,5 +32,14 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Keyword added']);
     }
+
+
+   public function listKeywords()
+{
+    return response()->json(Auth::user()->keywords);
 }
+
+
+}
+
 

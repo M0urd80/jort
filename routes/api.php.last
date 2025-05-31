@@ -1,48 +1,44 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DocumentController;
 
-// ------------------------------
-// 📢 Public routes
-// ------------------------------
+// Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
 Route::get('/search', [SearchController::class, 'searchPreview']);
 
-// ------------------------------
-// 🔒 Protected user routes (auth:sanctum)
-// ------------------------------
+// Protected user routes
 Route::middleware('auth:sanctum')->group(function () {
-    // User profile
     Route::get('/profile', [UserController::class, 'profile']);
     Route::put('/profile', [UserController::class, 'update']);
-
-    // Keywords
     Route::post('/keywords', [UserController::class, 'storeKeyword']);
-    Route::get('/keywords', [UserController::class, 'listKeywords']); // optional
-
-    // Documents
     Route::get('/documents/{id}', [SearchController::class, 'viewDocument']);
-    Route::get('/documents', [SearchController::class, 'index']);
-
-    // Default user route (optional)
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/keywords', [UserController::class, 'listKeywords']);
 });
 
-// ------------------------------
-// 🛠 Admin-only routes
-// ------------------------------
+
+// Admin-only routes
 Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function () {
     Route::post('/documents', [DocumentController::class, 'upload']);
     Route::get('/documents', [DocumentController::class, 'index']);
 });
+
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user(); // ✅ correct
+});
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user(); // ✅ correct
+});
+
+
+Route::middleware('auth:sanctum')->get('/documents', [SearchController::class, 'index']);
+
+
 

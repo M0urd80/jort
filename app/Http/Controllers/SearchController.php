@@ -29,5 +29,18 @@ class SearchController extends Controller
         $document = Document::findOrFail($id);
         return response()->json($document);
     }
+
+
+    public function index()
+{
+    $documents = Document::select('id', 'title', 'date', 'language', 'category')
+        ->orderByDesc('date')
+        ->take(50)
+        ->get();
+
+    return response()->json($documents);
+}
+
+
 }
 

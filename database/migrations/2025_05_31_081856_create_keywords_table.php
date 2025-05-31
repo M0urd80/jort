@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-    Schema::create('keywords', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->string('keyword');
-    $table->string('language'); // 'ar' or 'fr'
-    $table->timestamps();
-       });
-
-
+        Schema::create('keywords', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('word');              // required keyword
+            $table->string('language')->nullable(); // optional for now
+            $table->timestamps();
+        });
     }
 
     /**
@@ -31,3 +28,4 @@ return new class extends Migration
         Schema::dropIfExists('keywords');
     }
 };
+
