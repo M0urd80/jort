@@ -21,17 +21,22 @@ class UserController extends Controller
         return response()->json(['message' => 'Profile updated']);
     }
 
-    public function storeKeyword(Request $request)
-    {
-        $request->validate([
-            'keyword' => 'required|string|max:255',
-        ]);
+public function storeKeyword(Request $request)
+{
+    $request->validate([
+        'keyword' => 'required|string|max:255',
+        'language' => 'nullable|string|in:fr,ar'
+    ]);
 
-        $user = Auth::user();
-        $user->keywords()->create(['word' => $request->keyword]);
+    $user = Auth::user();
 
-        return response()->json(['message' => 'Keyword added']);
-    }
+    $user->keywords()->create([
+        'word' => $request->keyword,
+        'language' => $request->language ?? 'fr'
+    ]);
+
+    return response()->json(['message' => 'Keyword added']);
+}
 
 
    public function listKeywords()
