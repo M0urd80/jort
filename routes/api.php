@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\JsonSearchController;
 
 // ------------------------------
 // 📢 Public routes
@@ -46,3 +47,5 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     Route::get('/documents', [DocumentController::class, 'index']);
 });
 
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search']);
+Route::get('/json-search', [JsonSearchController::class, 'search']);

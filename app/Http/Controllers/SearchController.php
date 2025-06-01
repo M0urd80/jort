@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Document;
+use Illuminate\Support\Facades\Storage;
 
 class SearchController extends Controller
 {
@@ -41,6 +42,44 @@ class SearchController extends Controller
     return response()->json($documents);
 }
 
+
+public function flatJsonSearch(Request $request)
+{
+    $keyword = $request->input('q');
+    $category = $request->input('category');
+    $year = $request->input('year');
+    $city = $request->input('city');
+    $capitalMin = $request->input('capital_min');
+
+    // Load JSON from disk
+    $json = Storage::disk('public')->get('notices/flat_index_notices.json');
+    $notices = json_decode($json, true);
+
+    // Filter logic
+    $results = array_filter($notices, function ($n) use ($keyword, $category, $year, $city, $capitalMin) {
+        $ok = true;
+
+        if ($keyword) {
+            $ok = $ok && (stripos($n['text'] ?? '', $keyword) !== false);
+        }
+        if ($category) {
+            $ok = $ok && ($n['type'] === $category);
+        }
+        if ($year) {
+            $ok = $ok && ($n['issue_year'] === $year);
+        }
+        if ($city) {
+            $ok = $ok && (isset($n['address']) && stripos($n['address'], $city) !== false);
+        }
+        if ($capitalMin) {
+            $ok = $ok && (isset($n['capital']) && floatval($n['capital']) >= floatval($capitalMin));
+        }
+
+        return $ok;
+    });
+
+    return response()->json(array_values($results));
+}
 
 }
 
