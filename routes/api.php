@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
@@ -16,6 +16,13 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
 Route::get('/search', [SearchController::class, 'searchPreview']);
+
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill(); // Marks user as verified
+    return response()->json(['message' => 'Email verified successfully.']);
+})->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+
 
 // ------------------------------
 // 🔒 Protected user routes (auth:sanctum)
@@ -49,3 +56,6 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
 
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search']);
 Route::get('/json-search', [JsonSearchController::class, 'search']);
+
+
+
