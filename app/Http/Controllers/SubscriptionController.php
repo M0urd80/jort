@@ -19,17 +19,38 @@ class SubscriptionController extends Controller
             'type' => 'required|in:basic,advanced',
             'duration' => 'required|in:1_month,6_months,12_months',
         ]);
-            // ✅ Prevent duplicate pending subscriptions
-    $existing = Subscription::where('user_id', $request->user()->id)
+
+
+
+
+// ✅ Check for overlapping active subscription
+         $now = Carbon::now();
+
+         $active = Subscription::where('user_id', $request->user()->id)
+         ->where('status', 'active')
+         ->where('start_date', '<=', $now)
+         ->where('end_date', '>=', $now)
+         ->first();
+
+        if ($active) {
+        return response()->json([
+        'error' => 'You already have an active subscription.',
+        'subscription' => $active,
+        ], 409);
+        }
+
+// ✅ Check for duplicate pending subscription
+       $pending = Subscription::where('user_id', $request->user()->id)
         ->where('status', 'pending')
         ->first();
 
-    if ($existing) {
-        return response()->json([
-            'error' => 'You already have a pending subscription.',
-            'subscription' => $existing,
-        ], 409); // 409 = Conflict
-    }
+      if ($pending) {
+       return response()->json([
+        'error' => 'You already have a pending subscription.',
+        'subscription' => $pending,
+    ], 409);
+}
+
 
         $subscription = Subscription::create([
             'user_id' => $request->user()->id,
