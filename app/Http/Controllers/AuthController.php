@@ -21,14 +21,14 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
+        $token = Str::random(64);
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'email_verification_token' => Str::random(64),
         ]);
-
+         Log::debug("Generated token: " . $token);
         // Send confirmation email (simulate for now)
         // In real project, use queueable mails
         Mail::raw('Confirm your email using this token: ' . $user->email_verification_token, function ($message) use ($user) {

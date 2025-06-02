@@ -16,6 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'email_verification_token',
     ];
 
     protected $hidden = [
@@ -33,5 +34,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(\App\Models\Keyword::class);
     }
+
+
+   public function subscriptions()
+{
+    return $this->hasMany(Subscription::class);
+}
+
 }
 

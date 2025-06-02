@@ -8,7 +8,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\JsonSearchController;
-
+use App\Http\Controllers\SubscriptionController;
 // ------------------------------
 // 📢 Public routes
 // ------------------------------
@@ -44,6 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+     // User's subscriptions
+    Route::get('/subscriptions', [SubscriptionController::class, 'index']);           
+    Route::post('/subscriptions', [SubscriptionController::class, 'store']);          
+    Route::post('/subscriptions/activate', [SubscriptionController::class, 'activate']); 
 });
 
 // ------------------------------
